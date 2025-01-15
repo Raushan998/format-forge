@@ -10,11 +10,11 @@
       }, class: "space-y-6", id: "convertForm") do |f| %>
         <div class="space-y-4">
           <div class="flex flex-col items-center">
-            <label class="w-full flex flex-col items-center px-4 py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100">
+            <label class="w-full flex flex-col items-center px-4 py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors duration-200" id="dropZone">
               <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              <span class="mt-2 text-base text-gray-600">Select images</span>
+              <span class="mt-2 text-base text-gray-600">Drag and drop images here or click to select</span>
               <%= f.file_field :images, multiple: true, accept: 'image/*', 
                   class: "hidden",
                   onchange: "handleFileSelect(this)" %>
@@ -40,7 +40,7 @@
 
         <div id="convertButtonSection">
           <%= f.submit 'Convert to PDF', 
-              class: "w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed",
+              class: "w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200",
               id: "submitButton",
               disabled: true %>
         </div>
@@ -69,6 +69,7 @@
 </div>
 
 <script>
+// Form state management
 function resetFormState() {
   const fileList = document.getElementById('fileList');
   const submitButton = document.getElementById('submitButton');
@@ -78,31 +79,31 @@ function resetFormState() {
   const pdfList = document.getElementById('pdfList');
   const mergeOption = document.getElementById('mergeOption');
 
-  // Clear lists and messages
   fileList.innerHTML = '';
   pdfList.innerHTML = '';
   errorDiv.classList.add('hidden');
-  
-  // Hide sections that shouldn't be visible initially
   downloadSection.classList.add('hidden');
   mergeOption.classList.add('hidden');
   loading.classList.add('hidden');
-  
-  // Reset the submit button
   submitButton.disabled = true;
 }
 
+// File handling
 function handleFileSelect(input) {
   const fileList = document.getElementById('fileList');
   const submitButton = document.getElementById('submitButton');
   const mergeOption = document.getElementById('mergeOption');
   const downloadSection = document.getElementById('downloadSection');
   
-  // Reset the form state first
   resetFormState();
   
   if (input.files.length > 0) {
     Array.from(input.files).forEach(file => {
+      if (!file.type.startsWith('image/')) {
+        showError('Please select only image files.');
+        return;
+      }
+      
       const div = document.createElement('div');
       div.className = 'flex items-center space-x-2 text-sm text-gray-600';
       div.innerHTML = `
@@ -114,16 +115,22 @@ function handleFileSelect(input) {
       fileList.appendChild(div);
     });
     
-    // Show merge option only if multiple files are selected
     if (input.files.length > 1) {
       mergeOption.classList.remove('hidden');
     }
     
-    // Enable the submit button
     submitButton.disabled = false;
   }
 }
 
+// Error handling
+function showError(message) {
+  const errorDiv = document.getElementById('error');
+  errorDiv.textContent = message;
+  errorDiv.classList.remove('hidden');
+}
+
+// Base64 to Blob conversion
 function base64ToBlob(base64, type = 'application/pdf') {
   const binaryString = window.atob(base64);
   const bytes = new Uint8Array(binaryString.length);
@@ -133,6 +140,72 @@ function base64ToBlob(base64, type = 'application/pdf') {
   return new Blob([bytes], { type: type });
 }
 
+// Drag and drop functionality
+function initializeDragAndDrop() {
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = dropZone.querySelector('input[type="file"]');
+  
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  function highlight(e) {
+    dropZone.classList.remove('bg-gray-50', 'border-gray-300');
+    dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    dropZone.querySelector('svg').classList.remove('text-gray-400');
+    dropZone.querySelector('svg').classList.add('text-blue-500');
+    dropZone.querySelector('span').classList.remove('text-gray-600');
+    dropZone.querySelector('span').classList.add('text-blue-600');
+  }
+  
+  function unhighlight(e) {
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    dropZone.classList.add('bg-gray-50', 'border-gray-300');
+    dropZone.querySelector('svg').classList.remove('text-blue-500');
+    dropZone.querySelector('svg').classList.add('text-gray-400');
+    dropZone.querySelector('span').classList.remove('text-blue-600');
+    dropZone.querySelector('span').classList.add('text-gray-600');
+  }
+  
+  function handleDrop(e) {
+    unhighlight(e);
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    const dataTransfer = new DataTransfer();
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/')) {
+        dataTransfer.items.add(file);
+      }
+    });
+    
+    if (dataTransfer.files.length === 0) {
+      showError('Please drop only image files.');
+      return;
+    }
+    
+    fileInput.files = dataTransfer.files;
+    handleFileSelect(fileInput);
+  }
+  
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+    document.body.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, highlight, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, unhighlight, false);
+  });
+  
+  dropZone.addEventListener('drop', handleDrop, false);
+}
+
+// Form submission handling
 document.getElementById('convertForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
@@ -152,10 +225,15 @@ document.getElementById('convertForm').addEventListener('submit', function(e) {
     method: 'POST',
     body: new FormData(form)
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
   .then(data => {
     loading.classList.add('hidden');
-    submitButton.disabled = false;  // Re-enable the button after conversion
+    submitButton.disabled = false;
     downloadSection.classList.remove('hidden');
     
     data.pdfs.forEach(pdf => {
@@ -164,7 +242,7 @@ document.getElementById('convertForm').addEventListener('submit', function(e) {
       div.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
       div.innerHTML = `
         <span class="text-sm text-gray-600">${pdf.filename}</span>
-        <button class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600 flex items-center">
+        <button class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600 flex items-center transition-colors duration-200">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
           </svg>
@@ -189,9 +267,11 @@ document.getElementById('convertForm').addEventListener('submit', function(e) {
   })
   .catch(err => {
     loading.classList.add('hidden');
-    error.textContent = 'An error occurred during conversion. Please try again.';
-    error.classList.remove('hidden');
+    showError('An error occurred during conversion. Please try again.');
     submitButton.disabled = false;
   });
 });
+
+// Initialize drag and drop when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeDragAndDrop);
 </script>
