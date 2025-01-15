@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Dropzone from './Dropzone';
+import Dropzone from './DropZone';
 import FileList from './FileList';
 import MergeOption from './MergeOption';
 import Loading from './Loading';
