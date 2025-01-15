@@ -1,0 +1,30 @@
+{
+  "name": "app",
+  "private": "true",
+  "dependencies": {
+    "@babel/preset-react": "^7.26.3",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^7.3.0",
+    "@popperjs/core": "^2.11.8",
+    "esbuild": "^0.24.2",
+    "nodemon": "^3.1.9",
+    "postcss-cli": "^11.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sass": "^1.83.4"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --loader:.js=jsx --outdir=app/assets/builds --public-path=assets",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "watch": "esbuild app/javascript/application.js --bundle --sourcemap --loader:.js=jsx --outdir=app/assets/builds --public-path=assets --watch",
+    "watch:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
+  }
+}

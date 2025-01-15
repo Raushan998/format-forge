@@ -7,16 +7,12 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= yield :head %>
-
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="<%= asset_path 'icon.png' %>" type="image/png">
     <link rel="icon" href="<%= asset_path 'icon.svg' %>" type="image/svg+xml">
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
   </head>
   <body class="bg-gray-100 min-h-screen">
     <%= yield %>
