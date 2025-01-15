@@ -1,0 +1,197 @@
+<!-- app/views/converter/index.html.erb -->
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="max-w-xl w-full mx-4">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h1 class="text-2xl font-bold text-center mb-6">Image to PDF Converter</h1>
+      
+      <%= form_with(url: convert_path, method: :post, data: { 
+        turbo: false,
+        remote: true
+      }, class: "space-y-6", id: "convertForm") do |f| %>
+        <div class="space-y-4">
+          <div class="flex flex-col items-center">
+            <label class="w-full flex flex-col items-center px-4 py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              <span class="mt-2 text-base text-gray-600">Select images</span>
+              <%= f.file_field :images, multiple: true, accept: 'image/*', 
+                  class: "hidden",
+                  onchange: "handleFileSelect(this)" %>
+            </label>
+          </div>
+          
+          <div id="fileList" class="space-y-2"></div>
+          <div id="error" class="text-red-500 text-center hidden"></div>
+          
+          <div id="mergeOption" class="hidden">
+            <div class="flex items-center justify-center space-x-4">
+              <label class="inline-flex items-center">
+                <input type="radio" name="merge" value="false" class="form-radio text-blue-500" checked>
+                <span class="ml-2">Separate PDFs</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="merge" value="true" class="form-radio text-blue-500">
+                <span class="ml-2">Merge into single PDF</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div id="convertButtonSection">
+          <%= f.submit 'Convert to PDF', 
+              class: "w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed",
+              id: "submitButton",
+              disabled: true %>
+        </div>
+      <% end %>
+      
+      <div id="loading" class="hidden mt-4">
+        <div class="flex items-center justify-center">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span class="ml-2 text-gray-600">Converting...</span>
+        </div>
+      </div>
+
+      <div id="downloadSection" class="hidden mt-6">
+        <div class="flex flex-col items-center space-y-3">
+          <div class="text-green-500 flex items-center mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>Conversion complete!</span>
+          </div>
+          <div id="pdfList" class="w-full space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function resetFormState() {
+  const fileList = document.getElementById('fileList');
+  const submitButton = document.getElementById('submitButton');
+  const errorDiv = document.getElementById('error');
+  const downloadSection = document.getElementById('downloadSection');
+  const loading = document.getElementById('loading');
+  const pdfList = document.getElementById('pdfList');
+  const mergeOption = document.getElementById('mergeOption');
+
+  // Clear lists and messages
+  fileList.innerHTML = '';
+  pdfList.innerHTML = '';
+  errorDiv.classList.add('hidden');
+  
+  // Hide sections that shouldn't be visible initially
+  downloadSection.classList.add('hidden');
+  mergeOption.classList.add('hidden');
+  loading.classList.add('hidden');
+  
+  // Reset the submit button
+  submitButton.disabled = true;
+}
+
+function handleFileSelect(input) {
+  const fileList = document.getElementById('fileList');
+  const submitButton = document.getElementById('submitButton');
+  const mergeOption = document.getElementById('mergeOption');
+  const downloadSection = document.getElementById('downloadSection');
+  
+  // Reset the form state first
+  resetFormState();
+  
+  if (input.files.length > 0) {
+    Array.from(input.files).forEach(file => {
+      const div = document.createElement('div');
+      div.className = 'flex items-center space-x-2 text-sm text-gray-600';
+      div.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>${file.name}</span>
+      `;
+      fileList.appendChild(div);
+    });
+    
+    // Show merge option only if multiple files are selected
+    if (input.files.length > 1) {
+      mergeOption.classList.remove('hidden');
+    }
+    
+    // Enable the submit button
+    submitButton.disabled = false;
+  }
+}
+
+function base64ToBlob(base64, type = 'application/pdf') {
+  const binaryString = window.atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: type });
+}
+
+document.getElementById('convertForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const loading = document.getElementById('loading');
+  const submitButton = document.getElementById('submitButton');
+  const error = document.getElementById('error');
+  const downloadSection = document.getElementById('downloadSection');
+  const pdfList = document.getElementById('pdfList');
+  const form = this;
+  
+  loading.classList.remove('hidden');
+  submitButton.disabled = true;
+  error.classList.add('hidden');
+  pdfList.innerHTML = '';
+  
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form)
+  })
+  .then(response => response.json())
+  .then(data => {
+    loading.classList.add('hidden');
+    submitButton.disabled = false;  // Re-enable the button after conversion
+    downloadSection.classList.remove('hidden');
+    
+    data.pdfs.forEach(pdf => {
+      const blob = base64ToBlob(pdf.data);
+      const div = document.createElement('div');
+      div.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+      div.innerHTML = `
+        <span class="text-sm text-gray-600">${pdf.filename}</span>
+        <button class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600 flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          Download
+        </button>
+      `;
+      
+      const button = div.querySelector('button');
+      button.onclick = () => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = pdf.filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      };
+      
+      pdfList.appendChild(div);
+    });
+  })
+  .catch(err => {
+    loading.classList.add('hidden');
+    error.textContent = 'An error occurred during conversion. Please try again.';
+    error.classList.remove('hidden');
+    submitButton.disabled = false;
+  });
+});
+</script>
