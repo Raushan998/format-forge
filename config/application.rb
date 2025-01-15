@@ -37,6 +37,7 @@ module FormatForge
     # config.eager_load_paths << Rails.root.join("extras")
 
     # Don't generate system test files.
-    config.generators.system_tests = nil
+    config.max_file_size = 10.megabytes
+    config.supported_image_formats = ["image/jpeg", "image/png", "image/gif"]
   end
 end
