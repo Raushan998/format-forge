@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   root 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
   get '*path', to: 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
   post '/convert', to: 'converter#convert', as: :convert
+  post '/merge', to: 'converter#merge', as: :merge
 
   # Defines the root path route ("/")
   # root "posts#index"

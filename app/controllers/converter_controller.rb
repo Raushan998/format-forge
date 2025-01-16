@@ -52,6 +52,29 @@ class ConverterController < ApplicationController
     end
   end
 
+  def merge
+    image = MiniMagick::Image.read(params[:image].read)
+    signature = MiniMagick::Image.read(params[:signature].read)
+    opacity = params[:opacity].to_f
+    scale = params[:scale].to_f
+    x = params[:x].to_i
+    y = params[:y].to_i
+
+    # Resize the signature
+    signature.resize "#{(signature.width * scale).to_i}x#{(signature.height * scale).to_i}"
+    # Adjust the opacity of the signature
+    signature = signature.opacity(opacity * 100)
+
+    # Composite the signature onto the image
+    result = image.composite(signature) do |c|
+      c.compose "Over"
+      c.geometry "+#{x}+#{y}"
+    end
+
+    # Send the merged image back to the frontend
+    send_data result.to_blob, type: 'image/png', disposition: 'inline'
+  end
+
   private
 
   def generate_pdf(image_paths, output_pdf)
