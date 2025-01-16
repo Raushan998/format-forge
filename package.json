@@ -7,10 +7,12 @@
     "@hotwired/turbo-rails": "^7.3.0",
     "@popperjs/core": "^2.11.8",
     "esbuild": "^0.24.2",
+    "lucide-react": "^0.471.1",
     "nodemon": "^3.1.9",
     "postcss-cli": "^11.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^7.1.1",
     "sass": "^1.83.4"
   },
   "scripts": {
