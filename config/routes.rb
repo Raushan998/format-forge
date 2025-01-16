@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  root 'converter#index'
+
+  root 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
+  get '*path', to: 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
   post '/convert', to: 'converter#convert', as: :convert
 
   # Defines the root path route ("/")
