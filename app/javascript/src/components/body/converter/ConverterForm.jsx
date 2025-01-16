@@ -14,7 +14,6 @@ const ConverterForm = () => {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    // Fetch the CSRF token from the meta tag
     const token = document.querySelector('meta[name="csrf-token"]').content;
     setCsrfToken(token);
   }, []);
@@ -58,26 +57,28 @@ const ConverterForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-xl w-full mx-4">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold text-center mb-6">Image to PDF Converter</h1>
-          <form onSubmit={handleSubmit} className="space-y-6" id="convertForm">
-            <div className="space-y-4">
-              <Dropzone onFileSelect={handleFileSelect} />
-              <FileList files={files} />
-              {files.length > 1 && <MergeOption onChange={handleMergeChange} />}
-              {error && <div className="text-red-500 text-center">{error}</div>}
-            </div>
-            <div id="convertButtonSection">
-              <button
-                type="submit"
-                className="w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                disabled={files.length === 0 || loading}
-              >
-                Convert to PDF
-              </button>
-            </div>
+    <div className="container mx-auto px-4 mt-32">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold text-center text-gray-800">
+            Image to PDF Converter
+          </h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Dropzone onFileSelect={handleFileSelect} />
+            <FileList files={files} />
+            {files.length > 1 && <MergeOption merge={merge} onChange={handleMergeChange} />}
+            {error && (
+              <div className="bg-red-100 text-red-700 p-3 rounded">
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={files.length === 0 || loading}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              Convert to PDF
+            </button>
           </form>
           {loading && <Loading />}
           {pdfs.length > 0 && <DownloadSection pdfs={pdfs} />}

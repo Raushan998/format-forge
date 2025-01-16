@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { ChevronDown, Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HeaderComponent = () => {
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const tools = {
     'File Converters': [
       { name: 'Image to PDF', path: '/image-to-pdf' }
     ]
+  };
+
+  const handleToolClick = (path) => {
+    navigate(path);
+    setIsToolsOpen(false);
+    setIsMobileMenuOpen(false);
   };
 
   const getAllTools = () => {
@@ -53,11 +60,11 @@ const HeaderComponent = () => {
               </button>
 
               {isToolsOpen && (
-                <div className="absolute left-0 mt-2 bg-white rounded-md shadow-lg z-50 w-[600px]">
+                <div className="absolute left-0 mt-2 bg-white rounded-md shadow-lg z-50 w-[90vw] sm:w-[600px]">
                   <div className="p-4">
-                    <div className="flex">
+                    <div className="flex flex-col sm:flex-row">
                       {chunkArray(getAllTools(), 10).map((chunk, columnIndex) => (
-                        <div key={columnIndex} className="flex-1 min-w-[200px]">
+                        <div key={columnIndex} className="flex-1 min-w-[150px] sm:min-w-[200px]">
                           {chunk.map((tool, index) => (
                             <div key={index}>
                               {(index === 0 || chunk[index - 1]?.category !== tool.category) && (
@@ -65,13 +72,13 @@ const HeaderComponent = () => {
                                   {tool.category}
                                 </div>
                               )}
-                              <Link
-                                to={tool.path}
-                                onClick={() => setIsToolsOpen(false)}
-                                className="block py-1 text-sm text-gray-700 hover:text-blue-500"
+                              <p 
+                                key={tool.name}
+                                onClick={() => handleToolClick(tool.path)}
+                                className="block py-1 text-sm text-gray-700 hover:text-blue-500 cursor-pointer"
                               >
                                 {tool.name}
-                              </Link>
+                              </p>
                             </div>
                           ))}
                         </div>
@@ -81,13 +88,6 @@ const HeaderComponent = () => {
                 </div>
               )}
             </div>
-
-            <Link to="/pricing" className="text-gray-700 hover:text-blue-500">
-              Pricing
-            </Link>
-            <Link to="/api" className="text-gray-700 hover:text-blue-500">
-              API
-            </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
