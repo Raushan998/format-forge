@@ -51,7 +51,7 @@ class ConverterController < ApplicationController
       FileUtils.rm_rf(temp_dir) if temp_dir && Dir.exist?(temp_dir)
     end
   end
-
+  
   private
 
   def generate_pdf(image_paths, output_pdf)

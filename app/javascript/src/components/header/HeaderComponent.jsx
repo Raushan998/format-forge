@@ -10,6 +10,9 @@ const HeaderComponent = () => {
   const tools = {
     'File Converters': [
       { name: 'Image to PDF', path: '/image-to-pdf' }
+    ],
+    'SignatureOverlay': [
+      { name: 'overlay signature to image', path: '/image-signature' }
     ]
   };
 
