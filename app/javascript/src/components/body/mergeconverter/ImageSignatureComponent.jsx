@@ -6,21 +6,28 @@ import { MoveIcon, DownloadIcon, Search, Upload, ZoomIn, ZoomOut } from "lucide-
 import { Alert, AlertDescription } from "../../ui/Alert";
 
 const ImageSignatureComponent = () => {
+  // State for position, dragging, and images
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  
+  // Size controls for images
   const [signatureSize, setSignatureSize] = useState(100);
   const [baseImageSize, setBaseImageSize] = useState(100);
-  const [extractedText, setExtractedText] = useState("");
-  const [baseImageUrl, setBaseImageUrl] = useState(null);
-  const [signatureImageUrl, setSignatureImageUrl] = useState(null);
-  const [error, setError] = useState("");
   
+  // Image URLs and error handling
+  const [baseImageUrl, setBaseImageUrl] = useState("");
+  const [signatureImageUrl, setSignatureImageUrl] = useState("");
+  const [error, setError] = useState("");
+  const [extractedText, setExtractedText] = useState("");
+
+  // Refs for canvas and images
   const canvasRef = useRef(null);
   const baseImage = useRef(null);
   const signatureImage = useRef(null);
-  const originalBaseDimensions = useRef({ width: 400, height: 300 });
+  const originalBaseDimensions = useRef({ width: 800, height: 600 });
 
+  // Handle file uploads
   const handleFileUpload = (event, type) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -37,19 +44,16 @@ const ImageSignatureComponent = () => {
         if (type === 'base') {
           setBaseImageUrl(e.target.result);
           baseImage.current = img;
-          // Store original dimensions
           originalBaseDimensions.current = {
             width: img.width,
             height: img.height
           };
-          // Reset base image size when new image is uploaded
           setBaseImageSize(100);
         } else {
           setSignatureImageUrl(e.target.result);
           signatureImage.current = img;
-          // Reset signature size when new image is uploaded
           setSignatureSize(100);
-          // Center signature position
+          // Center signature
           setPosition({
             x: (canvasRef.current.width - img.width) / 2,
             y: (canvasRef.current.height - img.height) / 2
@@ -63,6 +67,7 @@ const ImageSignatureComponent = () => {
     setError("");
   };
 
+  // Canvas drawing function
   const updateCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -76,7 +81,6 @@ const ImageSignatureComponent = () => {
       const scaledWidth = originalBaseDimensions.current.width * baseScale;
       const scaledHeight = originalBaseDimensions.current.height * baseScale;
       
-      // Center the base image
       const x = (canvas.width - scaledWidth) / 2;
       const y = (canvas.height - scaledHeight) / 2;
       
@@ -98,10 +102,7 @@ const ImageSignatureComponent = () => {
     }
   };
 
-  useEffect(() => {
-    updateCanvas();
-  }, [position, signatureSize, baseImageSize]);
-
+  // Mouse event handlers
   const handleMouseDown = (e) => {
     if (!signatureImage.current) return;
     
@@ -129,6 +130,36 @@ const ImageSignatureComponent = () => {
     setIsDragging(false);
   };
 
+  // Touch event handlers
+  const handleTouchStart = (e) => {
+    if (!signatureImage.current) return;
+    e.preventDefault();
+    
+    const rect = canvasRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    setIsDragging(true);
+    setDragStart({ x: x - position.x, y: y - position.y });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    const rect = canvasRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    setPosition({
+      x: x - dragStart.x,
+      y: y - dragStart.y
+    });
+  };
+
+  // Download merged image
   const handleDownload = () => {
     if (!baseImage.current) {
       setError("Please upload a base image first");
@@ -137,12 +168,13 @@ const ImageSignatureComponent = () => {
     
     const canvas = canvasRef.current;
     const link = document.createElement('a');
-    link.download = 'merged-image.png';
-    link.href = canvas.toDataURL();
+    link.download = 'signed-document.png';
+    link.href = canvas.toDataURL('image/png');
     link.click();
   };
 
-  const extractText = async () => {
+  // Extract text (placeholder function)
+  const extractText = () => {
     if (!signatureImage.current) {
       setError("Please upload a signature image first");
       return;
@@ -150,12 +182,37 @@ const ImageSignatureComponent = () => {
     setExtractedText("Sample extracted signature text");
   };
 
+  // Handle canvas resize
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const container = canvas.parentElement;
+      const containerWidth = container.clientWidth;
+      
+      canvas.width = Math.min(800, containerWidth - 20);
+      canvas.height = (canvas.width * 300) / 800;
+      
+      updateCanvas();
+    };
+
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
+    return () => window.removeEventListener('resize', updateCanvasSize);
+  }, []);
+
+  // Update canvas when relevant states change
+  useEffect(() => {
+    updateCanvas();
+  }, [position, signatureSize, baseImageSize]);
+
   return (
-    <div className="flex justify-center items-center min-h-screen py-8 bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen p-4 bg-gray-100">
       <Card className="w-full max-w-3xl">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            Image Signature Merger
+            <span className="text-lg sm:text-xl">Sign Document</span>
             <Button 
               variant="outline" 
               size="sm"
@@ -163,7 +220,7 @@ const ImageSignatureComponent = () => {
               className="flex items-center gap-2"
             >
               <DownloadIcon className="w-4 h-4" />
-              Download
+              <span className="hidden sm:inline">Save</span>
             </Button>
           </CardTitle>
         </CardHeader>
@@ -177,7 +234,7 @@ const ImageSignatureComponent = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Base Image</label>
+                <label className="block text-sm font-medium mb-2">Document</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -191,42 +248,43 @@ const ImageSignatureComponent = () => {
                     className="flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-50"
                   >
                     <Upload className="w-4 h-4" />
-                    Upload Base Image
+                    <span className="text-sm">Upload Document</span>
                   </label>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Signature Image</label>
+                <label className="block text-sm font-medium mb-2">Signature</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileUpload(e, 'signature')}
                     className="hidden"
-                    id="signature-image-upload"
+                    id="signature-upload"
                   />
                   <label
-                    htmlFor="signature-image-upload"
+                    htmlFor="signature-upload"
                     className="flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-50"
                   >
                     <Upload className="w-4 h-4" />
-                    Upload Signature
+                    <span className="text-sm">Upload Signature</span>
                   </label>
                 </div>
               </div>
             </div>
 
-            <div className="relative border rounded-lg overflow-hidden bg-gray-50 flex justify-center items-center" style={{ height: '300px', marginTop: '50px' }}>
+            <div className="relative border rounded-lg overflow-hidden bg-gray-50 flex justify-center items-center">
               <canvas
                 ref={canvasRef}
-                width={800}
-                height={300}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                className="cursor-move"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
+                className="touch-none cursor-move"
               />
               {signatureImage.current && (
                 <div className="absolute top-2 right-2 bg-white/80 rounded p-1">
@@ -234,8 +292,8 @@ const ImageSignatureComponent = () => {
                 </div>
               )}
               {!baseImageUrl && (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                  Upload a base image to start
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm text-center px-4">
+                  Upload a document to start
                 </div>
               )}
             </div>
@@ -244,7 +302,7 @@ const ImageSignatureComponent = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <ZoomOut className="w-4 h-4" />
-                  <label className="text-sm font-medium">Base Image Size ({baseImageSize}%)</label>
+                  <label className="text-sm font-medium">Document Size ({baseImageSize}%)</label>
                   <ZoomIn className="w-4 h-4" />
                 </div>
                 <Slider
@@ -280,7 +338,7 @@ const ImageSignatureComponent = () => {
               <Button 
                 onClick={extractText}
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full sm:w-auto"
                 disabled={!signatureImage.current}
               >
                 <Search className="w-4 h-4" />
