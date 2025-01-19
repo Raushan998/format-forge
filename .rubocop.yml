@@ -1,8 +1,53 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+
 # Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: no_space
+  AutoCorrect: true
+
+# Ensure proper indentation
+Layout/IndentationWidth:
+  Width: 2 # Standard 2 spaces for indentation
+  AutoCorrect: true
+
+# Remove trailing spaces
+Layout/TrailingWhitespace:
+  Enabled: true
+  AutoCorrect: true
+
+# Ensure blank lines at the end of the file
+Layout/TrailingEmptyLines:
+  Enabled: true
+  AutoCorrect: true
+
+# Ensure proper space around operators
+Layout/SpaceAroundOperators:
+  Enabled: true
+  AutoCorrect: true
+
+# Compact hash style
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+  AutoCorrect: true
+
+# Ensure no extra spaces in method calls
+Layout/SpaceInsideParens:
+  EnforcedStyle: no_space
+  AutoCorrect: true
+
+# Align parameters in multi-line method calls
+Layout/ParameterAlignment:
+  Enabled: true
+  AutoCorrect: true
+
+# Allow single quotes unless interpolation is needed
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+  AutoCorrect: true
+
+# Remove extra blank lines
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+  AutoCorrect: true

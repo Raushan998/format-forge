@@ -12,7 +12,10 @@ const HeaderComponent = () => {
       { name: 'Image to PDF', path: '/image-to-pdf' }
     ],
     'SignatureOverlay': [
-      { name: 'overlay signature to image', path: '/image-signature' }
+      { name: 'Overlay Signature To Image', path: '/image-signature' }
+    ],
+    'ImageCompressor': [
+      {name: 'Image Compressor', path: '/image-compressor'}
     ]
   };
 
