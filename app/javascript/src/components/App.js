@@ -6,6 +6,7 @@ import ConverterForm from './body/image_to_pdf_converter/ConverterForm'
 import HeaderComponent from './header/HeaderComponent';
 import HomeComponent from './body/HomeComponent';
 import ImageSignatureComponent from './body/mergeconverter/ImageSignatureComponent';
+import ImageCompressorComponent from './body/ImageCompressor/ImageCompressorComponent';
 
 const Pricing = () => <div className="p-8">Pricing Page</div>;
 const API = () => <div className="p-8">API Documentation</div>;
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/api" element={<API />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="image-compressor" element={<ImageCompressorComponent/>} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -11,8 +11,18 @@ Rails.application.routes.draw do
 
   root 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
   get '*path', to: 'converter#index', constraints: ->(request) { !request.xhr? && request.format.html? }
+
+  # POST route for conversion
   post '/convert', to: 'converter#convert', as: :convert
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # API namespace routes
+  namespace :api do
+    namespace :v1 do
+      resources :images do
+        collection do
+          put :image_compressor
+        end
+      end
+    end
+  end
 end
