@@ -1,4 +1,1 @@
-web: bin/rails server
-css-watch: bin/rails tailwindcss:watch
-js-watch: yarn build --watch
-css-build: yarn build:css --watch
+web: bin/rails server -p ${PORT:-5000} -e $RAILS_ENV
