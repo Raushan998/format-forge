@@ -18,9 +18,11 @@ Rails.application.routes.draw do
   # API namespace routes
   namespace :api do
     namespace :v1 do
+      resources :language_list, only: [:index]
       resources :images do
         collection do
           put :image_compressor
+          post :image_translator
         end
       end
     end

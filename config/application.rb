@@ -39,5 +39,6 @@ module FormatForge
     # Don't generate system test files.
     config.max_file_size = 10.megabytes
     config.supported_image_formats = ["image/jpeg", "image/png", "image/gif"]
+    config.autoload_paths << Rails.root.join('lib')
   end
 end

@@ -7,6 +7,7 @@ import HeaderComponent from './header/HeaderComponent';
 import HomeComponent from './body/HomeComponent';
 import ImageSignatureComponent from './body/mergeconverter/ImageSignatureComponent';
 import ImageCompressorComponent from './body/ImageCompressor/ImageCompressorComponent';
+import TextTranslatorComponent from './body/text_translator/TextTranslatorComponent';
 
 const Pricing = () => <div className="p-8">Pricing Page</div>;
 const API = () => <div className="p-8">API Documentation</div>;
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="image-compressor" element={<ImageCompressorComponent/>} />
+          <Route path="/text-translator" element={<TextTranslatorComponent />}/>
         </Routes>
       </div>
     </BrowserRouter>

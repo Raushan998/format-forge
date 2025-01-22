@@ -16,6 +16,9 @@ const HeaderComponent = () => {
     ],
     'ImageCompressor': [
       {name: 'Image Compressor', path: '/image-compressor'}
+    ],
+    'Translator': [
+      {name: 'Text Translator', path: '/text-translator'}
     ]
   };
 

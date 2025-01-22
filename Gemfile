@@ -33,6 +33,9 @@ gem "bootsnap", require: false
 gem 'hexapdf'
 gem 'mini_magick'
 gem 'tailwindcss-rails'
+gem 'rtesseract'
+gem 'google-cloud-translate'
+gem 'puppeteer-ruby'
 gem 'zeitwerk', '< 2.7'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
@@ -47,7 +50,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-
+  gem 'dotenv'
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 end
