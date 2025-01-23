@@ -13,13 +13,18 @@ module Api
             def image_translator
                 options = image_params[:options]
                 file = image_params[:file]
+              
+                if file.blank?
+                  render json: { error: "File Not Present" }, status: :unprocessable_entity
+                  return
+                end
+              
                 begin
-                  raise ArgumentError, "File Not Present" if file.blank?
                   @temp_file = MiniMagick::Images::PreprocessorService.new(file).process
                   extracted_text = Tesseract::OcrProcessorService.new(@temp_file).extract_text(options)
                   translated_text = GoogleCloud::TranslateService.new.translate_text(extracted_text, options)
-                  render json: {text: translated_text}, status: :ok
                   result = Puppeteer::TextToPdfService.new(translated_text).convert
+              
                   if result[:success]
                     send_file(
                       result[:pdf_path],
@@ -35,7 +40,7 @@ module Api
                   render json: { error: e.message }, status: :unprocessable_entity
                 end
             end
-
+            
             private
             def image_params
                 params.require(:image).permit(
