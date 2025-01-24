@@ -23,9 +23,13 @@ const ImageCompressorComponent = () => {
     formData.append("image[options][format]", format);
 
     try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       const response = await fetch('/api/v1/images/image_compressor', {
         method: 'PUT',
         body: formData,
+        headers: {
+          'X-CSRF-Token': csrfToken
+        },
       });
 
       if (response.ok) {

@@ -1,7 +1,6 @@
 module Api
     module V1
         class ImagesController < ApplicationController
-            skip_before_action :verify_authenticity_token, only: [:image_translator]
             def image_compressor
                 @compressor = MiniMagick::Images::CompressorService.new(image_params[:file])
                 result = @compressor.compress(image_params[:options])
@@ -21,7 +20,7 @@ module Api
               
                 begin
                   @temp_file = MiniMagick::Images::PreprocessorService.new(file).process
-                  extracted_text = Tesseract::OcrProcessorService.new(@temp_file).extract_text(options)
+                  extracted_text = GoogleCloud::ExtractTextService.new(@temp_file).extract_text
                   translated_text = GoogleCloud::TranslateService.new.translate_text(extracted_text, options)
                   result = Puppeteer::TextToPdfService.new(translated_text).convert
               
