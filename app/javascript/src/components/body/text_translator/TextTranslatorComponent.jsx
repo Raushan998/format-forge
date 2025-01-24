@@ -4,26 +4,21 @@ import { Upload, Download, Search, ChevronDown, XCircle } from 'lucide-react';
 const TextTranslatorComponent = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [inputLanguages, setInputLanguages] = useState([]);
   const [outputLanguages, setOutputLanguages] = useState([]);
-  const [sourceLang, setSourceLang] = useState('');
   const [targetLang, setTargetLang] = useState('');
   const [loading, setLoading] = useState(false);
   const [translatedFile, setTranslatedFile] = useState(null);
-  const [isSourceOpen, setIsSourceOpen] = useState(false);
   const [isTargetOpen, setIsTargetOpen] = useState(false);
   const [error, setError] = useState(null);
-  const sourceRef = useRef(null);
   const targetRef = useRef(null);
 
   useEffect(() => {
-    fetchLanguages('input', setInputLanguages);
     fetchLanguages('output', setOutputLanguages);
   }, []);
 
   const fetchLanguages = async (type, setLanguages) => {
     try {
-      const response = await fetch(`/api/v1/language_list?q=${type}`);
+      const response = await fetch(`/api/v1/language_list?lang=${type}`);
       const data = await response.json();
       setLanguages(Object.entries(data.language_list));
     } catch (error) {
@@ -44,19 +39,22 @@ const TextTranslatorComponent = () => {
   };
 
   const handleSubmit = async () => {
-    if (!file || !sourceLang || !targetLang) return;
+    if (!file || !targetLang) return;
 
     setLoading(true);
-    setError(null); // Clear any previous errors
+    setError(null);
     const formData = new FormData();
     formData.append('image[file]', file);
-    formData.append('image[options][current_lang]', sourceLang);
     formData.append('image[options][target_lang]', targetLang);
 
     try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       const response = await fetch('/api/v1/images/image_translator', {
         method: 'POST',
         body: formData,
+        headers: {
+          'X-CSRF-Token': csrfToken
+        }
       });
       if (!response.ok) {
         throw new Error('Failed to translate image');
@@ -72,9 +70,6 @@ const TextTranslatorComponent = () => {
   };
 
   const handleClickOutside = (event) => {
-    if (sourceRef.current && !sourceRef.current.contains(event.target)) {
-      setIsSourceOpen(false);
-    }
     if (targetRef.current && !targetRef.current.contains(event.target)) {
       setIsTargetOpen(false);
     }
@@ -179,15 +174,6 @@ const TextTranslatorComponent = () => {
           {/* Language Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
-              options={inputLanguages}
-              value={sourceLang}
-              onChange={setSourceLang}
-              placeholder="Source Language"
-              isOpen={isSourceOpen}
-              setIsOpen={setIsSourceOpen}
-              ref={sourceRef}
-            />
-            <Select
               options={outputLanguages}
               value={targetLang}
               onChange={setTargetLang}
@@ -200,7 +186,7 @@ const TextTranslatorComponent = () => {
 
           <button
             onClick={handleSubmit}
-            disabled={!file || !sourceLang || !targetLang || loading}
+            disabled={!file || !targetLang || loading}
             className="w-full h-10 bg-blue-500 text-white rounded-md flex items-center justify-center hover:bg-blue-600"
           >
             {loading ? 'Translating...' : 'Translate'}
