@@ -22,11 +22,11 @@ module Api
                   @temp_file = MiniMagick::Images::PreprocessorService.new(file).process
                   extracted_text = GoogleCloud::ExtractTextService.new(@temp_file).extract_text
                   translated_text = GoogleCloud::TranslateService.new.translate_text(extracted_text, options)
-                  result = Puppeteer::TextToPdfService.new(translated_text).convert
+                  result = ConvertTxtService.new(translated_text).convert
               
                   if result[:success]
                     send_file(
-                      result[:pdf_path],
+                      result[:file_path],
                       filename: result[:filename],
                       type: result[:content_type],
                       disposition: 'attachment'
