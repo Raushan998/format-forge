@@ -35,7 +35,7 @@ gem 'mini_magick'
 gem 'tailwindcss-rails'
 gem 'google-cloud-translate'
 gem 'google-cloud-vision'
-gem 'zeitwerk', '< 2.7'
+gem 'zeitwerk', '< 2.8'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
 
