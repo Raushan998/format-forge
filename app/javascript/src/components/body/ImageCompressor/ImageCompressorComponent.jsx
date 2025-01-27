@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Slider } from "../../ui/Slider";
+import BodyComponent from '../BodyComponent';
 
 const ImageCompressorComponent = () => {
   const [file, setFile] = useState(null);
@@ -42,7 +43,6 @@ const ImageCompressorComponent = () => {
         setImageStats({
           originalSize: data.original_size,
           compressedSize: data.compressed_size,
-          dimensions: data.dimensions,
           format: data.format,
           quality: data.quality
         });
@@ -68,7 +68,6 @@ const ImageCompressorComponent = () => {
     }
   };
 
-  // Function to handle image download
   const handleDownload = () => {
     if (compressedImageUrl) {
       const link = document.createElement('a');
@@ -80,7 +79,6 @@ const ImageCompressorComponent = () => {
     }
   };
 
-  // Trigger compression when parameters change
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (file) {
@@ -92,9 +90,10 @@ const ImageCompressorComponent = () => {
   }, [quality, resizePercentage, format, file, compressImage]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Image Compressor</h1>
+    <BodyComponent>
+      <h1 className="text-2xl font-bold text-center text-gray-800">
+          Image Compressor
+      </h1>
 
         {/* File Input */}
         <div className="mb-6">
@@ -201,7 +200,6 @@ const ImageCompressorComponent = () => {
                   />
                   {imageStats && (
                     <div className="text-sm text-gray-600 space-y-1">
-                      <p>Dimensions: {imageStats.dimensions}</p>
                       <p>Original Size: {imageStats.originalSize}</p>
                       <p>Compressed Size: {imageStats.compressedSize}</p>
                       <p>Format: {imageStats.format}</p>
@@ -223,8 +221,7 @@ const ImageCompressorComponent = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </BodyComponent>
   );
 };
 

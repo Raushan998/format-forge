@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { Upload, Download, Search, ChevronDown, XCircle } from 'lucide-react';
+import BodyComponent from '../BodyComponent';
 
 const TextTranslatorComponent = () => {
   const [file, setFile] = useState(null);
@@ -132,12 +133,11 @@ const TextTranslatorComponent = () => {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-lg mt-6 relative">
-        <h1 className="text-2xl font-bold mb-4">Document Translator</h1>
+    <BodyComponent>
+      <h1 className="text-2xl font-bold mb-4">Document Translator</h1>
         
         {error && (
-          <div className="absolute top-0 left-0 right-0 bg-red-500 text-white p-4 rounded-t-lg flex justify-between items-center">
+          <div className="absolute top-16 left-4 right-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 max-w-lg bg-red-500 text-white p-4 rounded-lg flex justify-between items-center">
             <span>{error}</span>
             <button onClick={() => setError(null)} className="ml-4">
               <XCircle className="w-6 h-6" />
@@ -146,7 +146,6 @@ const TextTranslatorComponent = () => {
         )}
 
         <div className="space-y-4">
-          {/* File Upload */}
           <div className="border-2 border-dashed rounded-lg p-4 text-center">
             <input
               type="file"
@@ -171,7 +170,6 @@ const TextTranslatorComponent = () => {
             )}
           </div>
 
-          {/* Language Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
               options={outputLanguages}
@@ -193,34 +191,36 @@ const TextTranslatorComponent = () => {
           </button>
         </div>
 
-        <div className="mt-6">
-          <h2 className="text-xl font-bold mb-2">Translation Preview</h2>
-          {translatedFile ? (
-            <iframe
-              src={translatedFile}
-              className="w-full h-96 border rounded-md"
-              title="Translated document preview"
-            ></iframe>
-          ) : (
-            <div className="w-full h-96 border rounded-md flex items-center justify-center text-gray-500">
-              <span>Translation preview will appear here</span>
-            </div>
-          )}
-          <div className="mt-4 flex justify-end space-x-2">
-            {translatedFile && (
-              <a
-                href={translatedFile}
-                download
-                className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Download
-              </a>
+        {translatedFile && (
+          <div className="mt-6">
+            <h2 className="text-xl font-bold mb-2">Translation Preview</h2>
+            {translatedFile ? (
+              <iframe
+                src={translatedFile}
+                className="w-full h-96 border rounded-md"
+                title="Translated document preview"
+              ></iframe>
+            ) : (
+              <div className="w-full h-96 border rounded-md flex items-center justify-center text-gray-500">
+                <span>Translation preview will appear here</span>
+              </div>
             )}
+            <div className="mt-4 flex justify-end space-x-2">
+              {translatedFile && (
+                <a
+                  href={translatedFile}
+                  download
+                  className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download
+                </a>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        )}
+        
+    </BodyComponent>
   );
 };
 

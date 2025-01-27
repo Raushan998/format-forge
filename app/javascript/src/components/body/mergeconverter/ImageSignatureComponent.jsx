@@ -4,6 +4,7 @@ import { Button } from "../../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/Card";
 import { MoveIcon, DownloadIcon, Search, Upload, ZoomIn, ZoomOut } from "lucide-react";
 import { Alert, AlertDescription } from "../../ui/Alert";
+import BodyComponent from '../BodyComponent';
 
 const ImageSignatureComponent = () => {
   // State for position, dragging, and images
@@ -208,7 +209,7 @@ const ImageSignatureComponent = () => {
   }, [position, signatureSize, baseImageSize]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4 bg-gray-100">
+    <BodyComponent>
       <Card className="w-full max-w-3xl">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -353,7 +354,7 @@ const ImageSignatureComponent = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </BodyComponent>
   );
 };
 
