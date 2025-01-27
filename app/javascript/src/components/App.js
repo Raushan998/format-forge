@@ -1,37 +1,53 @@
-// app/javascript/components/App.jsx
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ConverterForm from './body/image_to_pdf_converter/ConverterForm'
-import HeaderComponent from './header/HeaderComponent';
-import HomeComponent from './body/HomeComponent';
-import ImageSignatureComponent from './body/mergeconverter/ImageSignatureComponent';
-import ImageCompressorComponent from './body/ImageCompressor/ImageCompressorComponent';
-import TextTranslatorComponent from './body/text_translator/TextTranslatorComponent';
+import { motion } from 'framer-motion';
+import { Suspense, lazy } from 'react';
 
-const Pricing = () => <div className="p-8">Pricing Page</div>;
-const API = () => <div className="p-8">API Documentation</div>;
+
+const ConverterForm = lazy(() => import('./body/image_to_pdf_converter/ConverterForm'));
+const HeaderComponent = lazy(() => import('./header/HeaderComponent'));
+const HomeComponent = lazy(() => import('./body/HomeComponent'));
+const ImageSignatureComponent = lazy(() => import('./body/mergeconverter/ImageSignatureComponent'));
+const ImageCompressorComponent = lazy(() => import('./body/ImageCompressor/ImageCompressorComponent'));
+const TextTranslatorComponent = lazy(() => import('./body/text_translator/TextTranslatorComponent'));
+
+const Loading = () => <div>Loading...</div>;
 const Login = () => <div className="p-8">Login Page</div>;
 const SignUp = () => <div className="p-8">Sign Up Page</div>;
 
 const App = () => {
   return (
     <BrowserRouter>
-      <div>
-        <HeaderComponent />
-        <Routes>
-          <Route path="/" element={<HomeComponent />} />
-          <Route path="/image-to-pdf" element={<ConverterForm />} />
-          <Route path='/image-signature' element={<ImageSignatureComponent/>}/>
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/api" element={<API />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="image-compressor" element={<ImageCompressorComponent/>} />
-          <Route path="/text-translator" element={<TextTranslatorComponent />}/>
-        </Routes>
-      </div>
+      <RoutesWrapper />
     </BrowserRouter>
+  );
+};
+
+const RoutesWrapper = () => {
+  return (
+    <div>
+      {/* Suspense wraps all lazy-loaded components */}
+      <Suspense fallback={<Loading />}>
+        <HeaderComponent />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Routes>
+            <Route path="/" element={<HomeComponent />} />
+            <Route path="/image-to-pdf" element={<ConverterForm />} />
+            <Route path="/image-signature" element={<ImageSignatureComponent />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/image-compressor" element={<ImageCompressorComponent />} />
+            <Route path="/text-translator" element={<TextTranslatorComponent />} />
+          </Routes>
+        </motion.div>
+      </Suspense>
+    </div>
   );
 };
 
