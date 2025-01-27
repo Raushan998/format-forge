@@ -43,7 +43,7 @@ const RoutesWrapper = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/image-compressor" element={<ImageCompressorComponent />} />
-            <Route path="/text-translator" element={<TextTranslatorComponent />} />
+            <Route path="/image-text-translator" element={<TextTranslatorComponent />} />
           </Routes>
         </motion.div>
       </Suspense>

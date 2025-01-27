@@ -21,6 +21,11 @@ const HeaderComponent = () => {
       features: [
         { name: 'Image Compressor', path: '/image-compressor' }
       ]
+    },
+    'Translator': {
+      features: [
+        { name: 'Image Text Translator', path: '/image-text-translator'}
+      ]
     }
   };
 
