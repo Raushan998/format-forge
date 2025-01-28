@@ -22,7 +22,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    console.log("<%= ENV['GOOGLE_TAG_ID'] %>")
     gtag('config', "<%= ENV['GOOGLE_TAG_ID'] %>");
   </script>
 
