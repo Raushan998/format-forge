@@ -38,6 +38,7 @@ gem 'google-cloud-vision'
 gem 'zeitwerk', '< 2.7'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
+gem 'sitemap_generator'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

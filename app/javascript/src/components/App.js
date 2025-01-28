@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Suspense, lazy } from 'react';
+import SEO from './SEO';
 
 
 const ConverterForm = lazy(() => import('./body/image_to_pdf_converter/ConverterForm'));
@@ -29,6 +30,7 @@ const RoutesWrapper = () => {
     <div>
       {/* Suspense wraps all lazy-loaded components */}
       <Suspense fallback={<Loading />}>
+        <SEO/>
         <HeaderComponent />
         <motion.div
           initial={{ opacity: 0 }}
