@@ -17,4 +17,13 @@
   <body class="bg-gray-100 min-h-screen">
     <%= yield %>
   </body>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= ENV['GOOGLE_TAG_ID'] %>"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    console.log("<%= ENV['GOOGLE_TAG_ID'] %>")
+    gtag('config', "<%= ENV['GOOGLE_TAG_ID'] %>");
+  </script>
+
 </html>
