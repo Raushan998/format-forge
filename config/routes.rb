@@ -32,6 +32,11 @@ Rails.application.routes.draw do
           post :image_translator
         end
       end
+      resources :pdfs do
+        collection do
+          post :compress
+        end
+      end
     end
   end
 end
