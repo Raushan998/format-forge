@@ -60,7 +60,18 @@ export const SEOConfig = {
           '@type': 'SoftwareApplication',
           name: 'Image Text Translator',
           applicationCategory: 'Translation Tool'
+        },
+      '/pdf-compressor':{
+        title: 'Compress Pdf | Format Forge',
+        description: 'Compress the pdf',
+        keywords: 'compress the pdf, resize the pdf, reduce the size of pdf',
+        schema:{
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'Pdf Compressor',
+          applicationCategory: 'Pdf Processing'
         }
+      }
       }
    }
 };

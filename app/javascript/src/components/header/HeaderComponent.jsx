@@ -37,6 +37,13 @@ const HeaderComponent = () => {
           subFeatures: [
             { name: 'Image Compressor', path: '/image-compressor' }
           ]
+        },
+        {
+           name: 'Pdf',
+           path: '/pdf',
+           subFeatures: [
+             { name: 'Pdf Compressor', path: '/pdf-compressor'}
+           ]
         }
       ]
     },

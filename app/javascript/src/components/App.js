@@ -12,6 +12,7 @@ const HomeComponent = lazy(() => import('./body/HomeComponent'));
 const ImageSignatureComponent = lazy(() => import('./body/mergeconverter/ImageSignatureComponent'));
 const ImageCompressorComponent = lazy(() => import('./body/ImageCompressor/ImageCompressorComponent'));
 const TextTranslatorComponent = lazy(() => import('./body/text_translator/TextTranslatorComponent'));
+const PdfCompressorComponent = lazy(()=> import('./body/pdfcompressor/PdfCompressorComponent'))
 
 const Loading = () => <div>Loading...</div>;
 const Login = () => <div className="p-8">Login Page</div>;
@@ -46,6 +47,7 @@ const RoutesWrapper = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/image-compressor" element={<ImageCompressorComponent />} />
             <Route path="/image-text-translator" element={<TextTranslatorComponent />} />
+            <Route path="/pdf-compressor" element={<PdfCompressorComponent/>}/>
           </Routes>
         </motion.div>
       </Suspense>
