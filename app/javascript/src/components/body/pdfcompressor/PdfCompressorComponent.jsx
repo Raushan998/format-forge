@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Upload } from 'lucide-react';
 import { Slider } from '../../ui/Slider';
-import BodyComponent from '../bodyComponent';
+import BodyComponent from '../BodyComponent';
 
 const PdfCompressorComponent = () => {
   const [file, setFile] = useState(null);
