@@ -1,8 +1,6 @@
 module Api
     module V1
       class PdfsController < ApplicationController
-        skip_before_action :verify_authenticity_token
-  
         def compress
           uploaded_file = params[:file]
           compression_percentage = params[:percentage].to_i.clamp(0, 95)
