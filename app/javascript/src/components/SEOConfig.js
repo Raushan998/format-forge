@@ -70,6 +70,17 @@ export const SEOConfig = {
           '@type': 'SoftwareApplication',
           name: 'Pdf Compressor',
           applicationCategory: 'Pdf Processing'
+        },
+        '/image-svg-converter':{
+          title: 'Convert Image to SVG',
+          description: 'Convert Image to SVG',
+          keywords: 'convert jpg to svg, convert png to svg, convert jpeg to svg, convert webp to svg',
+          schema:{
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'Image SVG Converter',
+            applicationCategory: 'SVG Converter'
+          }
         }
       }
       }

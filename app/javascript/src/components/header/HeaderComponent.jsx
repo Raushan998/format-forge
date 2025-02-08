@@ -1,65 +1,12 @@
 import React, { useState } from 'react';
 import { Menu, ChevronDown, ChevronUp } from 'lucide-react';
+import { NavItemComponent } from '../utils/NavItemComponent';
 
 const HeaderComponent = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [activeFeature, setActiveFeature] = useState(null);
-
-  const navItems = {
-    'File Converters': {
-      features: [
-        { 
-          name: 'Image', 
-          path: '/image',
-          subFeatures: [
-            { name: 'Image to PDF', path: '/image-to-pdf' }
-          ]
-        }
-      ]
-    },
-    'Signature Overlay': {
-      features: [
-        { 
-          name: 'Image', 
-          path: '/image',
-          subFeatures: [
-            { name: 'Overlay Signature To Image', path: '/image-signature' }
-          ]
-        }
-      ]
-    },
-    'File Compressor': {
-      features: [
-        { 
-          name: 'Image', 
-          path: '/image',
-          subFeatures: [
-            { name: 'Image Compressor', path: '/image-compressor' }
-          ]
-        },
-        {
-           name: 'Pdf',
-           path: '/pdf',
-           subFeatures: [
-             { name: 'Pdf Compressor', path: '/pdf-compressor'}
-           ]
-        }
-      ]
-    },
-    'Translator': {
-      features: [
-        { 
-          name: 'Image', 
-          path: '/image',
-          subFeatures: [
-            { name: 'Image Text Translator', path: '/image-text-translator' }
-          ]
-        }
-      ]
-    }
-  };
-
+  
   const handleNavigation = (path) => {
     window.location.href = path;
   };
@@ -97,7 +44,7 @@ const HeaderComponent = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
-            {Object.entries(navItems).map(([key, item]) => (
+            {Object.entries(NavItemComponent).map(([key, item]) => (
               <div key={key} className="relative dropdown-container">
                 <button 
                   className={`px-4 py-2 text-gray-700 hover:text-blue-500 flex items-center gap-2
@@ -186,7 +133,7 @@ const HeaderComponent = () => {
           </div>
           
           <div className="py-2">
-            {Object.entries(navItems).map(([key, item]) => (
+            {Object.entries(NavItemComponent).map(([key, item]) => (
               <div key={key} className="border-b border-gray-100 last:border-b-0">
                 <button
                   onClick={() => toggleDropdown(key)}

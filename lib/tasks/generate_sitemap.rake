@@ -11,5 +11,6 @@ task generate_sitemap: :environment do
     add '/image-signature', changefreq: 'weekly', priority: 0.9
     add '/image-compressor', changefreq: 'weekly', priority: 0.9
     add '/image-text-translator', changefreq: 'weekly', priority: 0.9
+    add '/image-svg-converter', changefreq: 'weekly', priority: 0.9
   end
 end
