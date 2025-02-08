@@ -13,6 +13,7 @@ const ImageSignatureComponent = lazy(() => import('./body/mergeconverter/ImageSi
 const ImageCompressorComponent = lazy(() => import('./body/ImageCompressor/ImageCompressorComponent'));
 const TextTranslatorComponent = lazy(() => import('./body/text_translator/TextTranslatorComponent'));
 const PdfCompressorComponent = lazy(()=> import('./body/pdfcompressor/PdfCompressorComponent'))
+const ImageSvgComponent = lazy(()=> import('./body/image_to_svg/ImageSvgComponent'))
 
 const Loading = () => <div>Loading...</div>;
 const Login = () => <div className="p-8">Login Page</div>;
@@ -48,6 +49,7 @@ const RoutesWrapper = () => {
             <Route path="/image-compressor" element={<ImageCompressorComponent />} />
             <Route path="/image-text-translator" element={<TextTranslatorComponent />} />
             <Route path="/pdf-compressor" element={<PdfCompressorComponent/>}/>
+            <Route path="/image-svg-converter" element={<ImageSvgComponent/>} />
           </Routes>
         </motion.div>
       </Suspense>

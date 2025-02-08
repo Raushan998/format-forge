@@ -30,6 +30,7 @@ Rails.application.routes.draw do
         collection do
           put :image_compressor
           post :image_translator
+          post :convert_to_svg
         end
       end
       resources :pdfs do
