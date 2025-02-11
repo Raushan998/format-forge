@@ -200,7 +200,7 @@ GEM
       google-protobuf (>= 3.18, < 5.a)
       googleapis-common-protos (~> 1.4)
       grpc (~> 1.41)
-    hexapdf (1.1.1)
+    hexapdf (1.2.0)
       cmdparse (~> 3.0, >= 3.0.3)
       geom2d (~> 0.4, >= 0.4.1)
       openssl (>= 2.2.1)
